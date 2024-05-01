@@ -1,0 +1,11 @@
+Database:
+  DbType: mysql  #数据库类型
+  DbName: chain_postcard  #数据库名称
+  Host: #数据库链接，如 127.0.0.1:3306
+  Username: #用户名
+  Pwd: #数据库密码
+  Charset: utf8  #数据库编码
+  ParseTime: True
+
+BlockChain:
+  RpcUrl: https://goerli.infura.io/v3/    #  区块链rpc地址  infura.io 可以获取
