@@ -18,7 +18,11 @@ type Data struct {
 }
 
 func SendResponse(c *gin.Context, err error, data interface{}) {
-	status, message := errno.DecodeErr(err)
+	status := 0
+	message := "success"
+	if err != nil {
+		status, message = errno.DecodeErr(err)
+	}
 
 	c.JSON(http.StatusOK, Response{
 		Code:    status,

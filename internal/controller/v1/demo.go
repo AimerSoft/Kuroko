@@ -8,7 +8,8 @@ import (
 )
 
 type Controller interface {
-	Hello(ctx *gin.Context)
+	TinyUrl(ctx *gin.Context)
+	Redirect(ctx *gin.Context)
 }
 
 type demoController struct {
@@ -20,8 +21,24 @@ func NewDemoController(factory store.Factory) *demoController {
 		srv: service.NewService(factory),
 	}
 }
-func (c demoController) Hello(ctx *gin.Context) {
+func (c demoController) TinyUrl(ctx *gin.Context) {
 	// todo: 处理相关逻辑，调用service方法
-	c.srv.Demo().Hello()
-	core.SendResponse(ctx, nil, "ok")
+	form := ctx.PostForm("url")
+	tinyUrl, err := c.srv.Demo().TinyUrl(form)
+	if err != nil {
+		core.SendResponse(ctx, err, "error")
+		return
+	}
+	core.SendResponse(ctx, nil, tinyUrl)
+}
+
+func (c demoController) Redirect(ctx *gin.Context) {
+	// todo: 处理相关逻辑，调用service方法
+	form := ctx.Param("code")
+	tinyUrl, err := c.srv.Demo().GetTinyUrl(form)
+	if err != nil {
+		ctx.Err()
+		return
+	}
+	ctx.Redirect(301, tinyUrl)
 }

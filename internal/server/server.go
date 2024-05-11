@@ -13,7 +13,8 @@ type Server struct {
 
 func NewServer(opt *option.Options) (*Server, error) {
 	sro := &store.DataStore{
-		DB: nil, // todo: DB初始化
+		DB:    nil, // todo: DB初始化
+		Redis: opt.RedisOptions,
 	}
 	g := route.ApiServer(opt.WebOptions.Engine, sro)
 	return &Server{

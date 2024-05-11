@@ -2,6 +2,7 @@ package store
 
 import (
 	"github.com/jinzhu/gorm"
+	"github.com/redis/go-redis/v9"
 	"kuroko/internal/store/demo"
 )
 
@@ -10,7 +11,8 @@ type (
 		Demo() demo.Store
 	}
 	DataStore struct {
-		DB *gorm.DB
+		DB    *gorm.DB
+		Redis *redis.Client
 	}
 )
 
@@ -22,4 +24,7 @@ func (ds *DataStore) Demo() demo.Store {
 
 func (ds DataStore) GetMySQL() *gorm.DB {
 	return ds.DB
+}
+func (ds DataStore) GetRedis() *redis.Client {
+	return ds.Redis
 }
