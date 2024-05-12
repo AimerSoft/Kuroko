@@ -47,7 +47,7 @@ func (d demoService) TinyUrl(url string) (string, error) {
 			randFix := uint64(1)
 			for true {
 				if randFix >= 3 {
-					return "", errno.Errno{Code: 10001, Message: "前缀不够用啦，请稍后再试或使用其他url 〒▽〒"}
+					return "", errno.ErrPreFixHashError
 				}
 				if urlPrefix == oldPreFix {
 					urlPrefix = tinyurl.CalculateTinyUrlPrefix(md5Str, randFix)
