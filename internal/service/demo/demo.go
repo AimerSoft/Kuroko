@@ -29,12 +29,34 @@ func NewDemo(srv StoreMethod) *demoService {
 func (d demoService) TinyUrl(url string) (string, error) {
 	log.Println("TinyUrl", url)
 	md5Str := tinyurl.Md5Transform(url)
-	tinyUrl := tinyurl.CalculateTinyUrlPrefix(md5Str)
-	err := d.store.Demo().SetCache(tinyUrl, url, time.Hour*24*30)
+	urlPrefix := tinyurl.CalculateTinyUrlPrefix(md5Str, 0)
+	// 使用计算出的key查询是否有冲突
+	cache, err := d.store.Demo().GetCache(urlPrefix)
+	if err != nil {
+		log.Println("redis error", err)
+	}
+	if len(cache) != 0 {
+		// 即该url已计算过
+		if cache == url {
+			return conf.Domain + urlPrefix, nil
+		} else {
+			// 发生key冲突
+			oldPreFix := urlPrefix
+			log.Println("pre hash error", "发生前缀hash冲突")
+			randFix := uint64(1)
+			for true {
+				if urlPrefix != oldPreFix {
+					urlPrefix = tinyurl.CalculateTinyUrlPrefix(md5Str, randFix)
+					randFix++
+				}
+			}
+		}
+	}
+	err = d.store.Demo().SetCache(urlPrefix, url, time.Hour*24*30)
 	if err != nil {
 		return "", err
 	}
-	return conf.Domain + tinyUrl, nil
+	return conf.Domain + urlPrefix, nil
 }
 
 func (d demoService) GetTinyUrl(url string) (string, error) {

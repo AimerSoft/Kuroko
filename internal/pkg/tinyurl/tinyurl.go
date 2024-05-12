@@ -25,8 +25,8 @@ const (
 	charLen = uint64(len(chars))
 )
 
-// CalculateTinyUrlPrefix 生成短链接前缀
-func CalculateTinyUrlPrefix(md5str string) string {
+// CalculateTinyUrlPrefix 生成短链接前缀, 通过randFix加盐，在出现
+func CalculateTinyUrlPrefix(md5str string, randFix uint64) string {
 	// 计算传入字符串的MD5哈希值
 	hash := md5.Sum([]byte(md5str))
 
@@ -38,8 +38,8 @@ func CalculateTinyUrlPrefix(md5str string) string {
 	for i := range shortURLPrefix {
 		// 将hash的字节作为索引，并转换为uint64类型
 		byteIndex := uint64(hash[i%md5.Size])
-		// 使用模运算找到chars中对应的字符索引
-		charIndex := int(byteIndex % charLen)
+		// 使用模运算找到chars中对应的字符索引, 对byteIndex进行加盐处理
+		charIndex := int((byteIndex + randFix) % charLen)
 		shortURLPrefix[i] = chars[charIndex]
 	}
 
@@ -55,7 +55,7 @@ func main() {
 	md5Hash := fmt.Sprintf("%x", md5.Sum([]byte(md5Str)))
 
 	// 生成短链接前缀
-	shortURL := CalculateTinyUrlPrefix(md5Hash)
+	shortURL := CalculateTinyUrlPrefix(md5Hash, 0)
 	end := time.Now().UnixMilli()
 	fmt.Println("MD5 Hash:", md5Hash)
 	fmt.Println("Short URL:", shortURL)
