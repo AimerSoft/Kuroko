@@ -32,7 +32,7 @@ func (d demoService) TinyUrl(url string) (string, error) {
 	md5Str := tinyurl.Md5Transform(url)
 	urlPrefix := tinyurl.CalculateTinyUrlPrefix(md5Str, 0)
 	// 使用计算出的key查询是否有冲突
-	cache, err := d.store.Demo().GetCache(urlPrefix)
+	cache, err := d.store.Cache().GetCache(urlPrefix)
 	if err != nil {
 		log.Println("redis error", err)
 	}
@@ -54,7 +54,7 @@ func (d demoService) TinyUrl(url string) (string, error) {
 					randFix++
 				} else {
 					// 尝试重新验证
-					cache, err = d.store.Demo().GetCache(urlPrefix)
+					cache, err = d.store.Cache().GetCache(urlPrefix)
 					if cache == url {
 						// 发现还是有冲突
 						oldPreFix = urlPrefix
@@ -65,7 +65,7 @@ func (d demoService) TinyUrl(url string) (string, error) {
 			}
 		}
 	}
-	err = d.store.Demo().SetCache(urlPrefix, url, time.Hour*24*30)
+	err = d.store.Cache().SetCache(urlPrefix, url, time.Hour*24*30)
 	if err != nil {
 		return "", err
 	}
@@ -73,7 +73,7 @@ func (d demoService) TinyUrl(url string) (string, error) {
 }
 
 func (d demoService) GetTinyUrl(url string) (string, error) {
-	res, err := d.store.Demo().GetCache(url)
+	res, err := d.store.Cache().GetCache(url)
 	if err != nil {
 		log.Println("error： get cache", err)
 		return "", nil

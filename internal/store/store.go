@@ -8,7 +8,7 @@ import (
 
 type (
 	Factory interface {
-		Demo() demo.Store
+		Cache() demo.Store
 	}
 	DataStore struct {
 		DB    *gorm.DB
@@ -18,7 +18,7 @@ type (
 
 var _ Factory = (*DataStore)(nil)
 
-func (ds *DataStore) Demo() demo.Store {
+func (ds *DataStore) Cache() demo.Store {
 	return demo.NewDemo(ds)
 }
 
