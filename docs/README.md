@@ -8,6 +8,9 @@
 
 ## 如何部署
 
+1. 拉取本项目到本地
+2. sudo docker build -t kuroko . 构建
+
 TODO: 
 - 支持Docker-Compose部署，集成自动部署本地Redis
 - Emoji短连接生成

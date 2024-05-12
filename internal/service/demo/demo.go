@@ -4,6 +4,7 @@ import (
 	conf "kuroko/config"
 	"kuroko/internal/pkg/tinyurl"
 	"kuroko/internal/store"
+	"kuroko/pkg/errno"
 	"log"
 	"time"
 )
@@ -45,9 +46,21 @@ func (d demoService) TinyUrl(url string) (string, error) {
 			log.Println("pre hash error", "发生前缀hash冲突")
 			randFix := uint64(1)
 			for true {
-				if urlPrefix != oldPreFix {
+				if randFix >= 3 {
+					return "", errno.Errno{Code: 10001, Message: "前缀不够用啦，请稍后再试或使用其他url 〒▽〒"}
+				}
+				if urlPrefix == oldPreFix {
 					urlPrefix = tinyurl.CalculateTinyUrlPrefix(md5Str, randFix)
 					randFix++
+				} else {
+					// 尝试重新验证
+					cache, err = d.store.Demo().GetCache(urlPrefix)
+					if cache == url {
+						// 发现还是有冲突
+						oldPreFix = urlPrefix
+					} else {
+						break
+					}
 				}
 			}
 		}
