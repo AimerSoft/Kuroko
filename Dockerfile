@@ -7,13 +7,13 @@ ENV GO111MODULE=on \
     GOARCH=amd64 \
 	GOPROXY="https://goproxy.cn,direct"
 
-# 移动到工作目录：/home/www/goWebBlog 这个目录 是你项目代码 放在linux上
+# 移动到工作目录：/home/kuroko 这个目录 是你项目代码 放在linux上
 # 这是我的代码跟目录
 # 你们得修改成自己的
 WORKDIR /home/kuroko
 
 # 将代码复制到容器中
-COPY . .
+COPY init .
 
 # 将我们的代码编译成二进制可执行文件  可执行文件名为 app
 RUN go build -o app .
