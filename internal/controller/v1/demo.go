@@ -22,9 +22,12 @@ func NewDemoController(factory store.Factory) *demoController {
 	}
 }
 func (c demoController) TinyUrl(ctx *gin.Context) {
-	// todo: 处理相关逻辑，调用service方法
 	form := ctx.PostForm("url")
-	tinyUrl, err := c.srv.Demo().TinyUrl(form)
+	day := ctx.PostForm("day")
+	if day == "" {
+		day = "30"
+	}
+	tinyUrl, err := c.srv.Demo().TinyUrl(form, day)
 	if err != nil {
 		core.SendResponse(ctx, err, "error")
 		return
@@ -33,7 +36,6 @@ func (c demoController) TinyUrl(ctx *gin.Context) {
 }
 
 func (c demoController) Redirect(ctx *gin.Context) {
-	// todo: 处理相关逻辑，调用service方法
 	form := ctx.Param("code")
 	tinyUrl, err := c.srv.Demo().GetTinyUrl(form)
 	if err != nil {

@@ -6,13 +6,14 @@ import (
 	"kuroko/internal/store"
 	"kuroko/pkg/errno"
 	"log"
+	"strconv"
 	"time"
 )
 
 type (
 	Service interface {
 		// todo: service方法
-		TinyUrl(url string) (string, error)
+		TinyUrl(url string, day string) (string, error)
 		GetTinyUrl(url string) (string, error)
 	}
 	StoreMethod interface {
@@ -27,8 +28,12 @@ func NewDemo(srv StoreMethod) *demoService {
 	return &demoService{store: srv.GetStore()}
 }
 
-func (d demoService) TinyUrl(url string) (string, error) {
+func (d demoService) TinyUrl(url string, day string) (string, error) {
 	log.Println("TinyUrl", url)
+	dayNum, err := strconv.Atoi(day)
+	if err != nil {
+		return "", err
+	}
 	md5Str := tinyurl.Md5Transform(url)
 	urlPrefix := tinyurl.CalculateTinyUrlPrefix(md5Str, 0)
 	// 使用计算出的key查询是否有冲突
@@ -65,7 +70,7 @@ func (d demoService) TinyUrl(url string) (string, error) {
 			}
 		}
 	}
-	err = d.store.Cache().SetCache(urlPrefix, url, time.Hour*24*30)
+	err = d.store.Cache().SetCache(urlPrefix, url, time.Hour*24*time.Duration(dayNum))
 	if err != nil {
 		return "", err
 	}
