@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  kuroko:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - PORT=8080
+      - REDIS_HOST=101.42.18.21
+      - REDIS_PORT=6379
+      - REDIS_PWD=umbink
+      - DOMAIN=https://umb.ink/k/
+    depends_on:
+      - redis
+
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"

@@ -13,10 +13,11 @@ type Options struct {
 }
 
 func NewOptions() *Options {
+
 	redisClient := redis.NewClient(&redis.Options{
 		Addr:     conf.RedisHost,
-		Password: "umbink", // no password set
-		DB:       1,        // use default DB
+		Password: conf.RedisPwd, // no password set
+		DB:       1,             // use default DB
 	})
 	redisClient.Options()
 	//redisClient.Set(context.Background(), "test", "test", time.Hour)

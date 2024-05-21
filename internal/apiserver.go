@@ -7,6 +7,7 @@ import (
 )
 
 func NewAPIServer() *app.App {
+	conf.LoadConfig()
 	opts := option.NewOptions()
 	application := app.NewApp("Bus API Server",
 		conf.ProjectName,
