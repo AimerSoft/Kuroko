@@ -6,10 +6,10 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
+      # 前面的是映射到宿主机的端口号，改端口的话该前面的
       - "8080:8080"
     environment:
-      - PORT=8080
       - REDIS_HOST=127.0.0.1 # host
       - REDIS_PORT=6379 # redis端口
       - REDIS_PWD=123456 # redis密码，没有可不填
-      - DOMAIN=https://umb.ink/k/ # 改成你个人域名的前缀
+      - DOMAIN=https://umb.ink/k # 改成你个人域名的前缀
