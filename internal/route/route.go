@@ -13,7 +13,7 @@ func ApiServer(g *gin.Engine, sro *store.DataStore) *gin.Engine {
 	controller := controller2.NewController(sro)
 	// 使用CORS中间件
 	g.Use(cors.Default())
-	g.GET("/tinyurl/:code", controller.Demo().Redirect)
-	g.POST("/tinyurl", controller.Demo().TinyUrl)
+	g.GET("/:code", controller.Demo().Redirect)
+	g.POST("/", controller.Demo().TinyUrl)
 	return g
 }

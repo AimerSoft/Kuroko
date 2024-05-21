@@ -45,14 +45,14 @@ server {
   ssl_certificate_key /home/ubuntu/xxx.key;
   location /k/ {
     # 改为容器的 PORT
-    proxy_pass http://localhost:8080/tinyurl/; # 这个用于get 短连接时，会转发到docker的短连接重定向接口中
+    proxy_pass http://localhost:8080/;
     proxy_set_header X-Real-IP $remote_addr;
     proxy_set_header X-Forwarded-Proto $scheme;
     proxy_set_header Upgrade $http_upgrade;
   }
  location /k {
     # 改为容器的 PORT
-    proxy_pass http://localhost:8080/tinyurl; # 用于post短连接生成请求
+    proxy_pass http://localhost:8080/;
     proxy_set_header X-Real-IP $remote_addr;
     proxy_set_header X-Forwarded-Proto $scheme;
     proxy_set_header Upgrade $http_upgrade;
