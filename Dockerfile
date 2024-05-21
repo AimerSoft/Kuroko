@@ -1,29 +1,24 @@
-FROM golang:alpine
-
-# 为我们的镜像设置必要的环境变量
+FROM golang:1.20 AS backend
 ENV GO111MODULE=on \
     CGO_ENABLED=0 \
     GOOS=linux \
     GOARCH=amd64 \
     GOPROXY="https://goproxy.cn,direct"
-
-# 移动到工作目录：/home/kuroko 这个目录 是你项目代码 放在linux上
-WORKDIR /home/kuroko
-
-# 将代码复制到容器中
+WORKDIR /app
 COPY . .
-
-# 将我们的代码编译成二进制可执行文件  可执行文件名为 app
 RUN go build -o app ./cmd
 
-# 移动到用于存放生成的二进制文件的 /dist 目录
-WORKDIR /dist
+FROM node:latest AS frontend
+ARG DOMAIN
+ENV VITE_API_URL_ROOT=$DOMAIN
+WORKDIR /app
+COPY ./web/app .
+RUN yarn install && yarn build
 
-# 将二进制文件从 /home/kuroko 目录复制到这里
-RUN cp /home/kuroko/app .
-
-# 声明服务端口
-EXPOSE 8080
-
-# 启动容器时运行的命令
-CMD ["./app"]
+FROM nginx:latest
+WORKDIR /app
+COPY --from=backend /app/app .
+COPY --from=frontend /app/dist /usr/share/nginx/html
+COPY ./nginx.conf /etc/nginx/nginx.conf
+EXPOSE 80
+CMD ["sh", "-c", "./app & nginx -g 'daemon off;'"]
