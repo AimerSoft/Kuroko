@@ -74,7 +74,7 @@ func (d demoService) TinyUrl(url string, day string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return conf.Domain + urlPrefix, nil
+	return conf.Domain + "/" + urlPrefix, nil
 }
 
 func (d demoService) GetTinyUrl(url string) (string, error) {
