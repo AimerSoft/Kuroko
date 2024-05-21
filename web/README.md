@@ -1,5 +1,11 @@
 # KurokoWeb
 
+## 如何更新
+
+```bash
+git submodule update --remote --merge
+```
+
 ## 如何编译
 
 ```bash
