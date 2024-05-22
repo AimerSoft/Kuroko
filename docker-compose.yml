@@ -11,5 +11,5 @@ services:
     environment:
       - REDIS_HOST=127.0.0.1 # host
       - REDIS_PORT=6379 # redis端口
-      - REDIS_PWD=123456 # redis密码，没有可不填
+      - REDIS_PWD= # redis密码，没有可不填
       - DOMAIN=https://umb.ink/k # 改成你个人域名的前缀

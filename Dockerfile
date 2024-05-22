@@ -7,12 +7,12 @@ ENV GO111MODULE=on \
 WORKDIR /app
 COPY . .
 RUN go build -o app ./cmd
-
 FROM node:latest AS frontend
 ARG DOMAIN
 ENV VITE_API_URL_ROOT=$DOMAIN
 WORKDIR /app
 COPY ./web/app .
+RUN git submodule update --init --recursive
 RUN yarn install && yarn build
 
 FROM nginx:latest
