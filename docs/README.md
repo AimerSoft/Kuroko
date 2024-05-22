@@ -34,7 +34,7 @@ services:
 ```
 3. 配置nginx。这里给出一个简单的nginx部署示例
 
-- 注意：服务默认接口为/tinyurl，所以配置转发时请不要忘记该url
+- 注意：服务默认接口为/，所以配置转发时请不要忘记该url
 ```yaml
 server {
   listen 443 ssl http2;
