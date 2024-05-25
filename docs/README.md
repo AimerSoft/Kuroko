@@ -33,8 +33,7 @@ services:
 
 ```
 3. 配置nginx。这里给出一个简单的nginx部署示例
-
-- 注意：服务默认接口为/，所以配置转发时请不要忘记该url
+- 注意：服务默认接口为/
 ```yaml
 server {
   listen 443 ssl http2;
@@ -65,21 +64,10 @@ docker-compose up --build -d
 ```
 5. 检查
 
-运行curl检查服务是否正常
-```shell
-curl --location --request POST 'https://<你的短连接前缀>' \
---header 'Host: umb.ink' \
---header 'Content-Type: multipart/form-data;' \
---form 'url="https://www.baidu.com/"' \
---form 'day="30"'
-```
-若返回类似下面用例，则正常，反之异常
-```shell
-{
-    "code": 0,
-    "message": "success",
-    "data": "https://umb.ink/k/Qb64ZJ"
-}
+   访问服务根路径,比如你配置的是https://umb.ink/k/，则访问https://umb.ink/k/。
+   若返回下面的页面，则正常
+
+   ![](https://umb.ink/static/img/02a2fbf79ec078e46daf75e4b59f6e9f.clipboard-2024-05-26.webp)
 ```
 # TODO: 
 - 高优：web与server整合同时部署
@@ -89,3 +77,4 @@ curl --location --request POST 'https://<你的短连接前缀>' \
 - 梗短连接生成
 - 短连接生成远程配置
 - 八卦短连接生成
+```
