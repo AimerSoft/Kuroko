@@ -16,7 +16,7 @@
             background-color: #f9f9f9;
             margin: 0;
             position: relative;
-            transform: scale(1.5);
+            /*transform: scale(1.5);*/
         }
         .container {
             text-align: center;
@@ -30,7 +30,7 @@
         }
         .image {
             width: 100%;
-            max-width: 200px;
+            max-width: 300px;
             border-radius: 20px;
             display: block;
             margin: 0 auto;
@@ -152,7 +152,7 @@
     </style>
 </head>
 <body>
-<a class="url" id="baseUrl">>{{ .base }}</a>
+<a class="url" id="baseUrl">{{ .base }}</a>
 <a href="https://github.com/AimerSoft/Kuroko" class="github-icon" target="_blank">
     <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub">
 </a>
@@ -189,13 +189,13 @@
     });
 
     function shortenUrl() {
-        const formData = new FormData();
         const longUrl = document.getElementById('longUrl').value;
+        const formData = new FormData();
         formData.append('url', longUrl);
         formData.append('day', selectedDays);
-        const baseUrl = document.getElementById('baseUrl').value;
+        const baseUrl = document.getElementById('baseUrl').textContent;
         console.log(baseUrl)
-        fetch('https://umb.ink/k', {
+        fetch(baseUrl, {
             method: 'POST',
             body: formData
         })
