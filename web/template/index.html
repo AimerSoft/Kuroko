@@ -194,7 +194,6 @@
         formData.append('url', longUrl);
         formData.append('day', selectedDays);
         const baseUrl = document.getElementById('baseUrl').textContent;
-        console.log(baseUrl)
         fetch(baseUrl, {
             method: 'POST',
             body: formData
