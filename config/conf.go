@@ -17,8 +17,11 @@ var (
 )
 
 func LoadConfig() {
-	Domain = "http://" + util.GetIP() + ":" + Port + "/k/"
 	Domain = os.Getenv("DOMAIN")
+	if Domain == "" {
+		Domain = "http://" + util.GetIP() + ":" + Port + "/k/"
+	}
+
 	RedisHost = os.Getenv("REDIS_HOST") + ":" + os.Getenv("REDIS_PORT")
 	RedisPwd = os.Getenv("REDIS_PWD")
 	log.Println("load config", Domain, Port, RedisHost, RedisPwd)

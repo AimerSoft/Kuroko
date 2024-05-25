@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuroko 短链接</title>
+    <link rel="icon" href="https://umb.ink/static/img/ch.ico">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            position: relative;
+        }
+        .container {
+            text-align: center;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 80%;
+            max-width: 800px;
+            position: relative;
+        }
+        .image {
+            width: 100%;
+            max-width: 300px;
+            border-radius: 20px;
+            display: block;
+            margin: 0 auto;
+        }
+        .title {
+            font-size: 28px;
+            margin: 10px 0;
+        }
+        .subtitle {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+        .input-group {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .input-group input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-right: 10px;
+            max-width: calc(100% - 120px);
+        }
+        .input-group button {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            min-width: 100px;
+        }
+        .input-group button:hover {
+            background-color: #0056b3;
+        }
+        .days-selection {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .days-selection-text {
+            margin-right: 10px;
+            font-size: 16px;
+            color: #333;
+        }
+        .days-selection button {
+            padding: 10px 15px;
+            margin: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: white;
+            cursor: pointer;
+        }
+        .days-selection button.active {
+            background-color: #007BFF;
+            color: white;
+            border-color: #007BFF;
+        }
+        .result-list {
+            width: 100%;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        .result-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            background-color: white;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .result-item span {
+            flex: 1;
+            margin: 0 10px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .result-item button {
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+        }
+        .result-item button.copy {
+            margin-right: 10px;
+        }
+        .result-item button.delete {
+            color: red;
+        }
+        .github-icon {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+        .github-icon img {
+            width: 32px;
+            height: 32px;
+        }
+        .page-icon {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: 32px;
+            height: 32px;
+        }
+        .url {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<a class="url" id="baseUrl">>{{ .base }}</a>
+<a href="https://github.com/AimerSoft/Kuroko" class="github-icon" target="_blank">
+    <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub">
+</a>
+<div class="container">
+    <img src="https://umb.ink/static/img/ch.ico" alt="Page Icon" class="page-icon">
+    <img src="https://kuroko.umb.ink/assets/kuroko-CQv43bl0.png" alt="Kuroko" class="image">
+    <div class="title">Kuroko 短链接</div>
+    <div class="subtitle">将链接通过十一维进行空间移动！</div>
+    <div class="input-group">
+        <input type="text" id="longUrl" placeholder="你的长链接">
+        <button onclick="shortenUrl()">空间移动</button>
+    </div>
+    <div class="days-selection">
+        <span class="days-selection-text">跳转有效期</span>
+        <button class="day-button" data-day="1">1 天</button>
+        <button class="day-button" data-day="7">7 天</button>
+        <button class="day-button" data-day="15">15 天</button>
+        <button class="day-button active" data-day="30">30 天</button>
+        <button class="day-button" data-day="90">90 天</button>
+        <button class="day-button" data-day="150">150 天</button>
+    </div>
+    <div class="result-list" id="resultList"></div>
+</div>
+
+<script>
+    let selectedDays = 30;
+
+    document.querySelectorAll('.day-button').forEach(button => {
+        button.addEventListener('click', function() {
+            document.querySelectorAll('.day-button').forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+            selectedDays = this.getAttribute('data-day');
+        });
+    });
+
+    function shortenUrl() {
+        const formData = new FormData();
+        const longUrl = document.getElementById('longUrl').value;
+        formData.append('url', longUrl);
+        formData.append('day', selectedDays);
+        const baseUrl = document.getElementById('baseUrl').value;
+        console.log(baseUrl)
+        fetch('https://umb.ink/k', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                const shortUrl = data.data; // 假设API返回的短链接字段是data
+                addShortUrl(shortUrl);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+
+    function addShortUrl(shortUrl) {
+        const resultList = document.getElementById('resultList');
+        const resultItem = document.createElement('div');
+        resultItem.className = 'result-item';
+        resultItem.innerHTML = `
+                <button class="copy" onclick="copyUrl('${shortUrl}')">📋</button>
+                <span>${shortUrl}</span>
+                <button class="delete" onclick="deleteUrl(this)">🗑️</button>
+            `;
+        resultList.appendChild(resultItem);
+    }
+
+    function copyUrl(shortUrl) {
+        navigator.clipboard.writeText(shortUrl).then(() => {
+            alert('短链接已复制到剪贴板');
+        });
+    }
+
+    function deleteUrl(button) {
+        const resultItem = button.parentElement;
+        resultItem.remove();
+    }
+</script>
+</body>
+</html>
