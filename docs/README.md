@@ -64,11 +64,14 @@ docker-compose up --build -d
 ```
 5. 检查
 
-   访问服务根路径,比如你配置的是https://umb.ink/k/，则访问https://umb.ink/k/。
+   访问服务根路径,比如你配置的是https://umb.ink/k/
+
+   则访问https://umb.ink/k/。
    若返回下面的页面，则正常
 
    ![](https://umb.ink/static/img/02a2fbf79ec078e46daf75e4b59f6e9f.clipboard-2024-05-26.webp)
 ```
+如果你希望前后端分离，请参考https://github.com/AimerSoft/KurokoWeb
 # TODO: 
 - 高优：web与server整合同时部署
 - 支持Docker-Compose部署，集成自动部署本地Redis
